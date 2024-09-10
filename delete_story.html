@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Story</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url('image.jpg');
+            background-size: cover;
+            background-position: center;
+            text-align: center;
+            margin-top: 50px;
+}
+
+        h1 {
+            color: #333;
+        }
+        .confirm-btn {
+            padding: 10px 20px;
+            background-color: #ff3333; /* Red background color */
+            color: white; /* Text color */
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .confirm-btn:hover {
+            background-color: #cc0000; /* Darker red on hover */
+        }
+        .cancel-link {
+            color: #333;
+            text-decoration: none;
+            margin-top: 10px;
+            display: inline-block;
+            transition: color 0.3s;
+        }
+        .cancel-link:hover {
+            color: #666;
+        }
+        p {
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>Delete Story</h1>
+    <p>Are you sure you want to delete "{{ story.title }}"?</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="confirm-btn">Confirm Delete</button>
+        <a href="{% url 'home' %}" class="cancel-link">Cancel</a>
+    </form>
+</body>
+</html>

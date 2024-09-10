@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Story Writer App - stories</title>
+    <style>
+        body {
+            background-color: #f0f0f0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+        }
+        header {
+            background-color: #1515db;
+            color: #1100ff;
+            padding: 10px;
+        }
+        h1 {
+            font-family: Algerian;
+            text-align: center;
+            color: rgb(15, 15, 32);
+        }
+        .btnn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #040405;
+            color: white;
+            text-decoration: none;
+            border: 1px solid #070a0e;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+        }
+        .btnn:hover {
+            background-color: #b35100;
+            border-color: #b33c00;
+        }
+        .story-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 - 10px;
+        }
+        .story {
+            background-color: #ffffff;
+            border: 1px solid #e3e2e2;
+            padding: 10px;
+            flex: 30%;
+            margin: 10px;
+        }
+        .story img {
+            max-width: 100%;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            padding: 16px;
+            text-align: center;
+            background-color: #f1f1f1;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .search-box {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 50%;
+            max-width: 400px;
+            box-sizing: border-box;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <center><h1>S T O R I E S</h1></center>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="{% url 'home' %}" class="btn">Home</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div class="search-container">
+        <form action="{% url 'search_stories' %}" method="GET">
+            <input type="text" name="query" class="search-box" placeholder="Search stories...">
+            <button type="submit" class="search-btn">Search</button>
+        </form>
+    </div>
+    <div class="story-row">
+        {% for story in stories %}
+        <div class="story">
+            <div class="card">
+                <center><b><h2>{{ story.title }}</h2></b></center>
+                {% if story.image %}
+                <img src="{{ story.image.url }}" alt="Story Image">
+                {% endif %}
+                <div>
+                    <p>{{ story.content }}</p>
+                    <p>Created by: {{ story.author.username }}</p>
+                    <div>
+                        <a href="{% url 'text_to_speech' story.id %}" class="btnn">Listen story</a>
+                        <a href="{% url 'convert_to_pdf' story.id %}" class="btnn">Download</a>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        {% empty %}
+        <p>No stories found.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

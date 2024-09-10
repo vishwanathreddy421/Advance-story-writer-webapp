@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Story Writer App - Home</title>
+    <style>
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+        }
+        header {
+            background-color: #1515db;
+            color: #1100ff;
+            padding: 10px;
+        }
+        h1 {
+            font-family: Algerian;
+            text-align: center;
+            color: rgb(15, 15, 32);
+        }
+        .btnn,
+        .dbtnn {
+            display: inline-block;
+            padding: 12px 24px; /* Increased padding */
+            background-color: #040405; /* Blue background color for .btnn */
+            color: white; /* Text color */
+            text-decoration: none; /* Remove underline */
+            border: 1px solid #070a0e; /* Blue border */
+            border-radius: 4px; /* Rounded corners */
+            text-align: center; /* Center text */
+            cursor: pointer; /* Show hand cursor on hover */
+            margin-right: 40px; /* Space between buttons */
+            margin-bottom: 10px;
+        }
+
+        .btnn:hover {
+            background-color: #b35100; /* Darker blue on hover */
+            border-color: #b33c00; /* Darker border on hover */
+        }
+
+        .dbtnn {
+            background-color: #ee0a0a; /* Red background color for .dbtnn */
+            border-color: #f61c04; /* Red border */
+        }
+
+        h3 h2 {
+            color: rgb(223, 12, 54);
+        }
+        
+        .stories-container {
+            display: flex;
+            flex-wrap: wrap; /* Allow items to wrap to next row */
+            justify-content: space-between;
+            padding: 20px;
+        }
+        .story-row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: 0 - 10px;
+        }
+        .story {
+            background-color: #ffffff;
+            border: 1px solid #e3e2e2; /* Story border */
+            padding: 10px;
+            flex: 30%;
+            margin: 10px;
+        }
+
+        .story img {
+            max-width: 100%; /* Ensure images do not exceed container width */
+            border-radius: 5px;
+            margin-bottom: 10px; /* Space between image and content */
+        }
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+            padding: 16px;
+            text-align: center;
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Welcome {{ request.user.username }}</h1>
+            <header>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'create' %}" class="btn">Create New Story</a></li>
+                        <li><a href="{% url 'stories' %}" class="btn">stories</a></li>
+                        <li><a href="{% url 'logout' %}" class="btn">Logout</a></li>
+                    </ul>
+                </nav>
+            </header>
+         </div>
+    </div>
+    <h2>My Stories</h2>
+    <div class="story-row">
+        {% for story in stories %}       
+        <div class="story">
+
+            <div class="card">
+                <center><b><h2>{{ story.title }}</h2></b></center>
+                {% if story.image %}
+                <img src="{{ story.image.url }}" alt="Story Image">
+                {% endif %}
+                <div>
+                    <p>{{ story.content }}</p>
+                    <p>Created by: {{ story.author.username }}</p>
+                    <div>
+                        <a href="{% url 'text_to_speech' story.id %}" class="btnn">Listen Story</a>
+                        <a href="{% url 'convert_to_pdf' story.id %}" class="btnn">Download</a>
+                    </div>
+                    <div>
+                        <a href="{% url 'edit_story' story.id %}" class="btnn">Edit Story</a>
+                        <a href="{% url 'delete_story' story.id %}" class="dbtnn">Delete Story</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div> 
+        {% empty %}
+        <p>No stories found.</p>
+        {% endfor %}
+    </div>           
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!-- story_create.html -->
+
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="UTF-8">
+    <title>Create New Story</title>
+    <style>
+        .form-group label[for="title"] {
+        display: block;
+        font-size: 1.2em; /* Adjust font size */
+        margin-bottom: 10px;
+    }
+
+    .form-group input[type="text"] {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em; /* Adjust font size */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensure padding and border are included in width */
+    }
+
+    /* Content label and textarea */
+    .form-group label[for="content"] {
+        display: block;
+        font-size: 1.2em; /* Adjust font size */
+        margin-bottom: 10px;
+    }
+
+    .form-group textarea {
+        width: 100%;
+        padding: 10px;
+        font-size: 1em; /* Adjust font size */
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box; /* Ensure padding and border are included in width */
+        resize: vertical; /* Allow vertical resizing of textarea */
+    }
+        h1 {
+            font-family: Algerian;
+            text-align: center;
+            color: rgb(17, 17, 32);
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
+        nav ul li a {
+            text-decoration: none;
+            color: #fff;
+        }
+        header {
+            background-color: #1515db;
+            color: #1100ff;
+            padding: 10px;
+        }
+        .form-group{
+            background-color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        }
+        .btnn {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #040405; /* Blue background color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid #070a0e; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Show hand cursor on hover */
+        }
+
+.btnn:hover {
+    background-color: #b35100; /* Darker blue on hover */
+    border-color: #b33c00; /* Darker border on hover */
+}
+.start-btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #30c28a; /* Blue background color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid #18c577; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Show hand cursor on hover */
+}
+.stop-btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f42d0a; /* Blue background color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid #f23c09; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Show hand cursor on hover */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Create New Story</h1>
+            <header>
+                <nav>
+                    <ul>
+                        <li><a href="{% url 'home' %}" class="btn">Home</a></li>
+                    </ul>
+                </nav>
+            </header>
+            
+        </div>
+
+        <div class="form">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="title">Title:</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="content">Content:</label>
+                    <textarea id="content" name="content" rows="10" required></textarea>
+                    <div class="button-container">
+                        <button id="start-recognition" class="start-btn">Start Speech Recognition</button>
+                        <button id="stop-recognition" class="stop-btn">Stop</button>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="image">Image:</label>
+                    <input type="file" id="image" name="image" accept="image/*">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btnn">Save Story</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script>
+        var recognition; // Declare recognition variable globally
+    
+        document.getElementById('start-recognition').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            var textarea = document.getElementById('content');
+            
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Speech recognition not supported in this browser.');
+                return;
+            }
+    
+            recognition = new webkitSpeechRecognition(); // Initialize speech recognition
+            recognition.lang = 'en-US'; // Set language (you can change to other languages)
+    
+            recognition.continuous = true; // Set recognition to be continuous
+    
+            recognition.onstart = function() {
+                console.log('Speech recognition started');
+            };
+    
+            recognition.onresult = function(event) {
+                var transcript = event.results[event.results.length - 1][0].transcript; // Get latest transcript
+                textarea.value += transcript; // Append transcript to textarea
+            };
+    
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+            };
+    
+            recognition.onend = function() {
+                console.log('Speech recognition ended');
+            };
+    
+            recognition.start(); // Start recognition
+        });
+    
+        document.getElementById('stop-recognition').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            if (recognition) {
+                recognition.stop(); // Stop recognition if it's currently running
+                console.log('Speech recognition stopped');
+            }
+        });
+    </script>
+    
+</body>
+</html>
+
+

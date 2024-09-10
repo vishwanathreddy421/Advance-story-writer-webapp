@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Story</title>
+    <style>
+        /* Your existing CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 1em;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            text-decoration: none;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        .start-btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #30c28a; /* Blue background color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid #18c577; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Show hand cursor on hover */
+}
+.stop-btn{
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #f42d0a; /* Blue background color */
+    color: white; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border: 1px solid #f23c09; /* Blue border */
+    border-radius: 4px; /* Rounded corners */
+    text-align: center; /* Center text */
+    cursor: pointer; /* Show hand cursor on hover */
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Story</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" value="{{ story.title }}" required>
+            </div>
+            <div class="form-group">
+                <label for="content">Content:</label>
+                <textarea id="content" name="content" rows="10" required>{{ story.content }}</textarea>
+                <div class="button-container">
+                    <button id="start-recognition" class="start-btn">Start Speech Recognition</button>
+                    <button id="stop-recognition" class="stop-btn">Stop</button>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn">Save Changes</button>
+                <a href="{% url 'home' %}" class="btn">Cancel</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        var recognition; // Declare recognition variable globally
+    
+        document.getElementById('start-recognition').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            var textarea = document.getElementById('content');
+            
+            if (!('webkitSpeechRecognition' in window)) {
+                alert('Speech recognition not supported in this browser.');
+                return;
+            }
+    
+            recognition = new webkitSpeechRecognition(); // Initialize speech recognition
+            recognition.lang = 'en-US'; // Set language (you can change to other languages)
+    
+            recognition.continuous = true; // Set recognition to be continuous
+    
+            recognition.onstart = function() {
+                console.log('Speech recognition started');
+            };
+    
+            recognition.onresult = function(event) {
+                var transcript = event.results[event.results.length - 1][0].transcript; // Get latest transcript
+                textarea.value += transcript; // Append transcript to textarea
+            };
+    
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error:', event.error);
+            };
+    
+            recognition.onend = function() {
+                console.log('Speech recognition ended');
+            };
+    
+            recognition.start(); // Start recognition
+        });
+    
+        document.getElementById('stop-recognition').addEventListener('click', function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            if (recognition) {
+                recognition.stop(); // Stop recognition if it's currently running
+                console.log('Speech recognition stopped');
+            }
+        });
+    </script>
+</body>
+</html>

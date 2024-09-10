@@ -1,0 +1,35 @@
+<!-- story_detail.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Story Detail</title>
+</head>
+<body>
+    <h1>{{ story.title }}</h1>
+    <p>{{ story.content }}</p>
+    <p>Created by: {{ story.author.username }}</p>
+    {% if story.image %}
+    <img src="{{ story.image.url }}" alt="Story Image">
+    {% endif %}
+
+    <h2>Feedback</h2>
+    {% for feedback in feedbacks %}
+    <div>
+        <p><strong>Posted by: {{ feedback.author.username }}</strong></p>
+        <p>{{ feedback.text }}</p>
+        <p><em>{{ feedback.created_at }}</em></p>
+    </div>
+    {% empty %}
+    <p>No feedback yet.</p>
+    {% endfor %}
+
+    <h2>Add Feedback</h2>
+    <form action="{% url 'add_feedback' story.id %}" method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit Feedback</button>
+    </form>
+</body>
+</html>
